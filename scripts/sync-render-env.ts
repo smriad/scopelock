@@ -66,28 +66,44 @@ async function renderFetch(apiKey: string, route: string, init?: RequestInit) {
   return response.json();
 }
 
-async function resolveServiceId(apiKey: string) {
-  if (process.env.RENDER_SERVICE_ID) return process.env.RENDER_SERVICE_ID;
+type ServiceRow = { service?: { id: string; name: string; type: string } };
+
+async function listWebServices(apiKey: string): Promise<ServiceRow[]> {
   let cursor: string | undefined;
+  const all: ServiceRow[] = [];
   for (;;) {
     const query = new URLSearchParams({ limit: "100", ...(cursor ? { cursor } : {}) });
-    const page = (await renderFetch(apiKey, `/services?${query}`)) as {
-      cursor?: string;
-      next?: string;
-      items?: { service?: { id: string; name: string; type: string } }[];
-    };
-    const items = page.items ?? [];
-    const hit = items.find(
-      (row) =>
-        row.service?.name === SERVICE_NAME &&
-        row.service?.type === "web_service",
-    );
-    if (hit?.service?.id) return hit.service.id;
-    cursor = page.cursor ?? page.next;
-    if (!cursor) break;
+    const page = (await renderFetch(apiKey, `/services?${query}`)) as
+      | ServiceRow[]
+      | {
+          cursor?: string;
+          next?: string;
+          items?: ServiceRow[];
+        };
+    const items = Array.isArray(page) ? page : (page.items ?? []);
+    all.push(...items);
+    const nextCursor = Array.isArray(page) ? undefined : (page.cursor ?? page.next);
+    if (!nextCursor) break;
+    cursor = nextCursor;
   }
+  return all;
+}
+
+async function resolveServiceId(apiKey: string) {
+  if (process.env.RENDER_SERVICE_ID) return process.env.RENDER_SERVICE_ID;
+  const items = await listWebServices(apiKey);
+  const hit = items.find(
+    (row) =>
+      row.service?.name === SERVICE_NAME &&
+      row.service?.type === "web_service",
+  );
+  if (hit?.service?.id) return hit.service.id;
+  const names = items
+    .map((row) => row.service?.name)
+    .filter(Boolean)
+    .join(", ");
   throw new Error(
-    `No web service named "${SERVICE_NAME}" found. Create it from render.yaml first.`,
+    `No web service named "${SERVICE_NAME}" found. On your account: ${names || "(none)"}.`,
   );
 }
 
