@@ -1,0 +1,52 @@
+# https://scopelock.smriad.tech — add CNAME scopelock → your-service.onrender.com
+services:
+  - type: web
+    name: scopelock
+    runtime: node
+    # Starter avoids free-tier sleep during demo judging; use `free` if you prefer.
+    plan: starter
+    region: singapore
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    domains:
+      - scopelock.smriad.tech
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DEMO_MODE
+        value: "false"
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://scopelock.smriad.tech
+      - key: MONGODB_DB
+        value: scopelock
+      - key: OLLAMA_BASE_URL
+        value: https://openrouter.ai/api/v1
+      - key: OLLAMA_CHAT_MODEL
+        value: google/gemma-3-4b-it
+      - key: OLLAMA_MODEL
+        value: google/gemma-3-4b-it
+      - key: OLLAMA_API_KEY
+        sync: false
+      - key: PRIORLABS_API_KEY
+        sync: false
+      - key: TIGER_DATABASE_URL
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: SERPAPI_API_KEY
+        sync: false
+      - key: BACKBOARD_API_KEY
+        sync: false
+      - key: BACKBOARD_ASSISTANT_ID
+        sync: false
+      - key: TINKER_API_KEY
+        sync: false
+      - key: TINKER_BRIEF_MODEL
+        sync: false

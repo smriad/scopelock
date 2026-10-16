@@ -1,0 +1,15 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: scopelock
+      POSTGRES_PASSWORD: scopelock
+      POSTGRES_DB: scopelock
+    ports:
+      - "5433:5432"
+    volumes:
+      - scopelock_pg:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  scopelock_pg:

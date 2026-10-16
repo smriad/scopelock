@@ -1,0 +1,36 @@
+{
+  "label": "ScopeLock smoke run — Acme Apple Sign-In scope creep",
+  "ranAt": "2026-10-16T14:55:00Z",
+  "environment": "local",
+  "baseUrl": "http://localhost:3000",
+  "sow": {
+    "title": "Acme MVP SOW (smoke)",
+    "backend": "mongodb",
+    "documentId": "6ad23aa157548da4712c6e91",
+    "chunkCount": 1
+  },
+  "analysis": {
+    "mongoAnalysisId": "6ad23ad157548da4712c6e92",
+    "mode": "mastra",
+    "overallRisk": "medium",
+    "tabpfnHours": 15.3,
+    "hourlyRate": 125,
+    "estimatedChangeOrderUsd": 1912.5,
+    "tinkerPolished": true,
+    "threadSource": "samples/thread.txt",
+    "summary": "Client requested Sign In with Apple with a Friday deadline — outside Phase 1 SOW (social login deferred to Phase 2).",
+    "verdictSample": "out_of_scope — OAuth/social providers explicitly Phase 2 optional"
+  },
+  "integrationsVerified": [
+    "Gemma (OpenRouter)",
+    "Mastra",
+    "MongoDB Atlas",
+    "TabPFN",
+    "Tinker",
+    "ElevenLabs",
+    "SerpApi",
+    "Backboard",
+    "Sentry"
+  ],
+  "notes": "Tiger: update TIGER_DATABASE_URL password in .env.local (stillbench vs house-pot URLs differ). This run used Atlas for SOW chunks."
+}

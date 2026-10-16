@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ScopeLock
 
-## Getting Started
+**Local-first AI that turns freelance scope creep into paid change orders.**
 
-First, run the development server:
+Built for [Hacktoberfest Open-Source AI Challenge Week 2: Side Hustle](https://dev.to/challenges/hacktoberfest-week2-2026-10-12).
+
+## Production (Render + smriad.tech)
+
+See **[docs/RENDER-SMRIAD.md](docs/RENDER-SMRIAD.md)**.
+
+1. Deploy with `render.yaml` → service `scopelock`
+2. DNS: **CNAME** `scopelock` → `*.onrender.com`
+3. `export RENDER_API_KEY=rnd_... && npm run sync:render` (reads `.env.local`)
+
+Live URL: **https://scopelock.smriad.tech**
+
+## Local dev
 
 ```bash
+cp .env.example .env.local   # fill partner keys
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Optional: `docker compose up -d` for local pgvector; local Ollama for embeddings.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open http://localhost:3000 — samples preloaded.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How it works
 
-## Learn More
+1. Paste your **statement of work** and optionally **Index into pgvector** (embeds chunks with Ollama + stores in Postgres).
+2. Paste a **client thread**.
+3. **Analyze scope** — Ollama returns structured JSON: verdicts, SOW citations, reply draft, change-order line items.
 
-To learn more about Next.js, take a look at the following resources:
+If Ollama is offline, the app uses a **demo analysis** so you can still record a video (set `DEMO_MODE=true` on cloud hosts).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Layer | Tech |
+|--------|------|
+| UI | Next.js, Tailwind |
+| Inference | [Ollama](https://ollama.com) — Gemma / Llama (open weights) |
+| RAG | PostgreSQL + pgvector (compatible with [Tiger Data](https://www.tigerdata.com)) |
+| Deploy | Render (`render.yaml`, demo mode) |
 
-## Deploy on Vercel
+## Environment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+See `.env.example`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT
