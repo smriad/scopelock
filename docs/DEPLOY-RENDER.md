@@ -17,6 +17,14 @@ git push origin main
 
 ---
 
+## Billing note
+
+`render.yaml` uses **`plan: free`** so Blueprint deploy works **without a card**. Tradeoff: the app **sleeps** after ~15 minutes idle; first visit after sleep takes ~1 minute to wake.
+
+To avoid sleep (and Render will ask for a card), change `plan: free` → `plan: starter` in `render.yaml`.
+
+---
+
 ## Step 2 — Create the service from Blueprint
 
 1. Open **[Render Blueprints](https://dashboard.render.com/blueprints)**.

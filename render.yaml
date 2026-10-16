@@ -3,8 +3,8 @@ services:
   - type: web
     name: scopelock
     runtime: node
-    # Starter avoids free-tier sleep during demo judging; use `free` if you prefer.
-    plan: starter
+    # Free tier — no card required for Blueprint. Service sleeps after ~15 min idle (cold start ~1 min).
+    plan: free
     region: singapore
     buildCommand: npm ci && npm run build
     startCommand: npm start
