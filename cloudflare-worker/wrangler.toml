@@ -1,0 +1,7 @@
+name = "scopelock"
+main = "src/index.js"
+compatibility_date = "2024-10-01"
+
+[[routes]]
+pattern = "scopelock.smriad.tech"
+custom_domain = true

@@ -1,4 +1,5 @@
-# https://scopelock.smriad.tech — add CNAME scopelock → your-service.onrender.com
+# Default host may be scopelock-xxxx.onrender.com if scopelock.onrender.com is taken globally.
+# Custom: scopelock.smriad.tech → CNAME to the hostname shown in Render → Custom Domains.
 services:
   - type: web
     name: scopelock
@@ -9,8 +10,7 @@ services:
     buildCommand: npm ci && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
-    domains:
-      - scopelock.smriad.tech
+    # Add scopelock.smriad.tech in Dashboard → Custom Domains (CNAME to your *.onrender.com host).
     envVars:
       - key: NODE_VERSION
         value: "22"

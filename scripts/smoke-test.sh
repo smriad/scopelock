@@ -8,21 +8,25 @@ echo "→ $BASE/api/health"
 curl -sf "$BASE/api/health" | python3 -m json.tool
 
 echo "→ index SOW"
-INDEX_JSON=$(curl -sf -X POST "$BASE/api/sow" \
+INDEX_JSON=$(python3 -c "import json, pathlib; r=pathlib.Path('''$ROOT'''); print(json.dumps({'title':'Smoke test SOW','content':(r/'samples/sow.md').read_text()}))")
+INDEX_RESP=$(curl -sf -X POST "$BASE/api/sow" \
   -H 'Content-Type: application/json' \
-  -d "$(python3 -c "import json; print(json.dumps({'title':'Smoke test SOW','content':open('$ROOT/samples/sow.md').read()}))")")
-echo "$INDEX_JSON" | python3 -m json.tool
-DOC_ID=$(echo "$INDEX_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['documentId'])")
-BACKEND=$(echo "$INDEX_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin).get('backend','tiger'))")
+  -d "$INDEX_JSON")
+echo "$INDEX_RESP" | python3 -m json.tool
+DOC_ID=$(echo "$INDEX_RESP" | python3 -c "import sys,json; print(json.load(sys.stdin)['documentId'])")
+BACKEND=$(echo "$INDEX_RESP" | python3 -c "import sys,json; print(json.load(sys.stdin).get('backend','tiger'))")
 
 BODY=$(python3 -c "
-import json
-thread=open('$ROOT/samples/thread.txt').read()
+import json, pathlib
+r=pathlib.Path('''$ROOT''')
+thread=(r/'samples/thread.txt').read_text()
 payload={'thread':thread,'hourlyRate':125}
-if '$BACKEND'=='mongodb':
-    payload['mongoDocumentId']='$DOC_ID'
+backend='''$BACKEND'''
+doc_id='''$DOC_ID'''
+if backend=='mongodb':
+    payload['mongoDocumentId']=doc_id
 else:
-    payload['documentId']='$DOC_ID'
+    payload['documentId']=doc_id
 print(json.dumps(payload))
 ")
 
